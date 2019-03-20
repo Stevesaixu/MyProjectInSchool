@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+	<mapper namespace="com.hzyc.project2.dao.UserMapper">
+	
+	 <resultMap type="user" id="selPhoneMap">
+	 	<id column="user_id" property="id"/>
+		<result column="user_name" property="name"/>
+		<result column="user_sex" property="sex"/>
+		<result column="user_age" property="age"/>
+	 	<result column="user_live" property="live"/>
+	 	<result column="user_phone" property="phone"/>
+	 	<result column="user_email" property="email"/>
+	 	<result column="user_idCard" property="idCard"/>
+	 	<result column="user_info" property="info"/>
+	 	<result column="user_photoName" property="photoName"/>
+	 </resultMap>
+	 <resultMap type="adm" id="selAdmMap">
+	 	<id column="adm_id" property="id"/>
+		<result column="adm_name" property="name"/>
+		<result column="adm_password" property="password"/>
+		
+	 </resultMap>
+	 
+	 <select id="selectByPhone" parameterType="String" resultMap="selPhoneMap">
+	 	select * from user where user_phone=#{phone}
+	 </select>
+	 <select id="selectAdm" parameterType="String" resultMap="selAdmMap" >
+	 	select * from adm where adm_name=#{name}
+	 </select>
+	 <select id="selectHouseByPage"  resultType="house"  >
+	 	select * from house where house_id limit #{startPos},#{pageSize}  
+	 </select>
+	 <select id="getHouseCount" resultType="long" >
+	 	select  COUNT(*) from house 
+	 </select>
+	 <select id="queryHouse" parameterType="String" resultType="String" >
+	 	select  COUNT(*) from house where house_storey=#{storey}
+	 </select>
+	 <select id="selectHouseById" parameterType="String" resultType="house" >
+	 	select  * from house where house_id =#{id}
+	 </select>
+	 
+	 
+	 
+	 
+	 <select id="selectUserByPage"  resultMap="selPhoneMap" >
+	 	select * from user where user_id limit #{startPos},#{pageSize}  
+	 </select>
+	 <select id="getUserCount" resultType="long" >
+	 	select  COUNT(*) from user 
+	 </select>
+	 <select id="queryUser" parameterType="String" resultType="String" >
+	 	select  COUNT(*) from user where user_name=#{name} and user_idCard=#{idCard}
+	 </select>
+	 <select id="selectUserById" parameterType="String" resultMap="selPhoneMap" >
+	 	select  * from user where user_id =#{id}
+	 </select>
+	 <select id="queryUserRegist" parameterType="String" resultType="String" >
+	 	select  COUNT(*) from user where user_phone=#{phone}
+	 </select>
+	 
+	 
+	 
+	 
+	<insert id="insertPhone" parameterType="String" >
+		insert into user (user_phone) values (#{phone})
+	</insert>
+	<insert id="addHouse"  >
+		insert into house 
+		(house_address,house_estate,house_storey,house_floor,house_large,house_decorate,house_type,house_rentWay,house_deposit,house_user,house_phone,house_state,house_userId,house_rentMoney,house_tag,house_title) 
+		values (#{house.house_address},#{house.house_estate},#{house.house_storey},#{house.house_floor},#{house.house_large},#{house.house_decorate},#{house.house_type},#{house.house_rentWay},#{house.house_deposit},#{house.house_user},#{house.house_phone},#{house.house_state},#{id},#{house.house_rentMoney},#{house.house_tag},#{house.house_title})
+	</insert>
+	<insert id="addHousePictrue"  >
+		insert into img (img_name,img_house_id) values(#{imgName},#{id})
+	</insert>
+	<insert id="addUser"  >
+		insert into user (user_name,user_sex,user_age,user_live,user_phone,user_email,user_idCard,user_info) 
+		values (#{user.name},#{user.sex},#{user.age},#{user.live},#{user.phone},#{user.email},#{user.idCard},#{user.info})
+	</insert>
+	<insert id="addUserRegist"  >
+		insert into user (user_name,user_phone,user_info) 
+		values (#{user.name},#{user.phone},#{info})
+	</insert>
+	
+	
+	
+	
+	<update id="updateHouse"  >
+		update house 
+		set house_address=#{house_address},house_estate=#{house_estate},house_storey=#{house_storey},house_floor=#{house_floor},
+			house_large=#{house_large},house_decorate=#{house_decorate},house_type=#{house_type},house_rentWay=#{house_rentWay},
+			house_deposit=#{house_deposit},house_user=#{house_user},house_phone=#{house_phone},house_state=#{house_state},
+			house_rentMoney=#{house_rentMoney},house_tag=#{house_tag},house_title=#{house_title} 
+			
+		where house_id=#{house_id}
+	</update>
+	<update id="updateUser"  >
+		update user 
+		set user_name=#{name},user_sex=#{sex},user_age=#{age},user_live=#{live},user_phone=#{phone},user_email=#{email},user_idCard=#{idCard},user_info=#{info}
+		where user_id=#{id}
+	</update>
+	<update id="updateUserHouse"  >
+		update user 
+		set user_name=#{name},user_sex=#{sex},user_age=#{age},user_live=#{live},user_phone=#{phone},user_email=#{email},user_idCard=#{idCard}
+		where user_id=#{id}
+	</update>
+	
+	
+	
+	
+	<delete id="deleteHouse">
+		delete from house where house_id=#{id}
+	</delete>
+	<delete id="deleteUser">
+		delete from user where user_id=#{id}
+	</delete>
+	
+	
+	<select id="queryHousePre" resultType="house">
+		select  h.*,i.img_name from img i left join house h on i.img_house_id=h.house_id ORDER BY h.house_id
+	
+	</select>
+	
+	<select id="queryHouseInfo" resultType="house">
+		select * from house where house_id=#{id}
+	
+	</select>
+	<select id="queryHouseInfoImg" resultType="Img">
+		select * from img where img_house_id=#{id}
+	
+	</select>
+	</mapper>
